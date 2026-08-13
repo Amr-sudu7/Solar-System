@@ -1,0 +1,207 @@
+/* =========================================================
+   RESPONSIVE SOLAR SYSTEM
+   ========================================================= */
+
+/* -----------------------------------------
+   BASE
+----------------------------------------- */
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+
+/* -----------------------------------------
+   SOLAR SYSTEM POSITIONING
+----------------------------------------- */
+
+.solar-system {
+    position: fixed;
+
+    top: 50%;
+    left: 50%;
+
+    width: 800px;
+    height: 800px;
+
+    /*
+        CSS controls the responsive size.
+        JavaScript only changes these two variables.
+    */
+    --system-scale: 1;
+    --parallax-x: 0px;
+    --parallax-y: 0px;
+
+    transform:
+        translate(
+            calc(-50% + var(--parallax-x)),
+            calc(-50% + var(--parallax-y))
+        )
+        scale(var(--system-scale));
+
+    transform-origin: center center;
+
+    will-change: transform;
+
+    /*
+        Prevent anything from changing the layout
+        because of the 800px fixed canvas.
+    */
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   <= 370px
+========================================================= */
+
+@media (max-width: 370px) {
+
+    .solar-system {
+        --system-scale: 0.34;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL PHONES
+   371px - 576px
+========================================================= */
+
+@media (min-width: 371px) and (max-width: 576px) {
+
+    .solar-system {
+        --system-scale: 0.46;
+    }
+
+}
+
+
+/* =========================================================
+   LARGE PHONES
+   577px - 768px
+========================================================= */
+
+@media (min-width: 577px) and (max-width: 768px) {
+
+    .solar-system {
+        --system-scale: 0.62;
+    }
+
+}
+
+
+/* =========================================================
+   TABLETS
+   769px - 991px
+========================================================= */
+
+@media (min-width: 769px) and (max-width: 991px) {
+
+    .solar-system {
+        --system-scale: 0.73;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL LAPTOPS
+   992px - 1180px
+========================================================= */
+
+@media (min-width: 992px) and (max-width: 1180px) {
+
+    .solar-system {
+        --system-scale: 0.83;
+    }
+
+}
+
+
+/* =========================================================
+   LAPTOPS
+   1181px - 1300px
+========================================================= */
+
+@media (min-width: 1181px) and (max-width: 1300px) {
+
+    .solar-system {
+        --system-scale: 0.93;
+    }
+
+}
+
+
+/* =========================================================
+   LARGE SCREENS
+   >= 1301px
+========================================================= */
+
+@media (min-width: 1301px) {
+
+    .solar-system {
+        --system-scale: 1;
+    }
+
+}
+
+
+/* =========================================================
+   VERY SHORT SCREENS
+   Prevent vertical clipping
+========================================================= */
+
+@media (max-height: 600px) {
+
+    .solar-system {
+        --system-scale: 0.55;
+    }
+
+}
+
+
+@media (max-height: 500px) {
+
+    .solar-system {
+        --system-scale: 0.45;
+    }
+
+}
+
+
+/* =========================================================
+   SHORT + SMALL PHONE
+========================================================= */
+
+@media (max-width: 576px) and (max-height: 700px) {
+
+    .solar-system {
+        --system-scale: 0.40;
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .solar-system {
+        --parallax-x: 0px;
+        --parallax-y: 0px;
+    }
+
+}
