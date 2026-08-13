@@ -1,137 +1,74 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="An animated interactive solar system with NASA links.">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="An animated interactive solar system with NASA links." />
     <title>Interactive Solar System</title>
-    <link rel="stylesheet" href="./css.css">
-    <link rel="stylesheet" href="./responsive.css">
-</head>
-<body>
+    <link rel="stylesheet" href="./css.css" />
+    <link rel="stylesheet" href="./responsive.css" />
+  </head>
+  <body>
     <div class="space-effects" aria-hidden="true">
-        <div class="stars stars-back"></div>
-        <div class="stars stars-mid"></div>
-        <div class="stars stars-front"></div>
-        <div id="meteors"></div>
+      <div class="stars stars-back"></div>
+      <div class="stars stars-mid"></div>
+      <div class="stars stars-front"></div>
+      <div id="meteors"></div>
     </div>
 
     <main class="solar-system" aria-label="Interactive solar system">
-        <!-- SUN -->
-        <a
-            class="sun planet-link"
-            href="https://science.nasa.gov/sun/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Explore the Sun on NASA"
-            data-name="Sun"
-        ></a>
+      <!-- SUN -->
+      <a class="sun planet-link" href="https://science.nasa.gov/sun/" target="_blank" rel="noopener noreferrer" aria-label="Explore the Sun on NASA" data-name="Sun"></a>
 
-        <!-- MERCURY -->
-        <div class="orbit orbit-mercury">
-            <a
-                class="planet mercury"
-                href="https://science.nasa.gov/mercury/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Explore Mercury on NASA"
-                data-name="Mercury"
-            ></a>
-        </div>
+      <!-- MERCURY -->
+      <div class="orbit orbit-mercury">
+        <a class="planet mercury" href="https://science.nasa.gov/mercury/" target="_blank" rel="noopener noreferrer" aria-label="Explore Mercury on NASA" data-name="Mercury"></a>
+      </div>
 
-        <!-- VENUS -->
-        <div class="orbit orbit-venus">
-            <a
-                class="planet venus"
-                href="https://science.nasa.gov/venus/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Explore Venus on NASA"
-                data-name="Venus"
-            ></a>
-        </div>
+      <!-- VENUS -->
+      <div class="orbit orbit-venus">
+        <a class="planet venus" href="https://science.nasa.gov/venus/" target="_blank" rel="noopener noreferrer" aria-label="Explore Venus on NASA" data-name="Venus"></a>
+      </div>
 
-        <!-- EARTH -->
-        <div class="orbit orbit-earth">
-            <a
-                class="planet earth"
-                href="https://science.nasa.gov/earth/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Explore Earth on NASA"
-                data-name="Earth"
-            >
-                <span class="moon-orbit" aria-hidden="true">
-                    <span class="moon"></span>
-                </span>
-            </a>
-        </div>
+      <!-- EARTH -->
+      <div class="orbit orbit-earth">
+        <a class="planet earth" href="https://science.nasa.gov/earth/" target="_blank" rel="noopener noreferrer" aria-label="Explore Earth on NASA" data-name="Earth">
+          <span class="moon-orbit" aria-hidden="true">
+            <span class="moon"></span>
+          </span>
+        </a>
+      </div>
 
-        <!-- MARS -->
-        <div class="orbit orbit-mars">
-            <a
-                class="planet mars"
-                href="https://science.nasa.gov/mars/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Explore Mars on NASA"
-                data-name="Mars"
-            ></a>
-        </div>
+      <!-- MARS -->
+      <div class="orbit orbit-mars">
+        <a class="planet mars" href="https://science.nasa.gov/mars/" target="_blank" rel="noopener noreferrer" aria-label="Explore Mars on NASA" data-name="Mars"></a>
+      </div>
 
-        <!-- JUPITER -->
-        <div class="orbit orbit-jupiter">
-            <a
-                class="planet jupiter"
-                href="https://science.nasa.gov/jupiter/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Explore Jupiter on NASA"
-                data-name="Jupiter"
-            ></a>
-        </div>
+      <!-- JUPITER -->
+      <div class="orbit orbit-jupiter">
+        <a class="planet jupiter" href="https://science.nasa.gov/jupiter/" target="_blank" rel="noopener noreferrer" aria-label="Explore Jupiter on NASA" data-name="Jupiter"></a>
+      </div>
 
-        <!-- SATURN -->
-        <div class="orbit orbit-saturn">
-            <a
-                class="planet saturn"
-                href="https://science.nasa.gov/saturn/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Explore Saturn on NASA"
-                data-name="Saturn"
-            >
-                <span class="rings" aria-hidden="true"></span>
-            </a>
-        </div>
+      <!-- SATURN -->
+      <div class="orbit orbit-saturn">
+        <a class="planet saturn" href="https://science.nasa.gov/saturn/" target="_blank" rel="noopener noreferrer" aria-label="Explore Saturn on NASA" data-name="Saturn">
+          <span class="rings" aria-hidden="true"></span>
+        </a>
+      </div>
 
-        <!-- URANUS -->
-        <div class="orbit orbit-uranus">
-            <a
-                class="planet uranus"
-                href="https://science.nasa.gov/uranus/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Explore Uranus on NASA"
-                data-name="Uranus"
-            ></a>
-        </div>
+      <!-- URANUS -->
+      <div class="orbit orbit-uranus">
+        <a class="planet uranus" href="https://science.nasa.gov/uranus/" target="_blank" rel="noopener noreferrer" aria-label="Explore Uranus on NASA" data-name="Uranus"></a>
+      </div>
 
-        <!-- NEPTUNE -->
-        <div class="orbit orbit-neptune">
-            <a
-                class="planet neptune"
-                href="https://science.nasa.gov/neptune/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Explore Neptune on NASA"
-                data-name="Neptune"
-            ></a>
-        </div>
+      <!-- NEPTUNE -->
+      <div class="orbit orbit-neptune">
+        <a class="planet neptune" href="https://science.nasa.gov/neptune/" target="_blank" rel="noopener noreferrer" aria-label="Explore Neptune on NASA" data-name="Neptune"></a>
+      </div>
     </main>
 
     <div class="hint" aria-hidden="true">Click a planet or the Sun to explore it on NASA</div>
 
     <script src="./js.js"></script>
-</body>
+  </body>
 </html>

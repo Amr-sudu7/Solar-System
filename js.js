@@ -1,205 +1,145 @@
-/* =========================================================
-   SOLAR SYSTEM JAVASCRIPT
-   ========================================================= */
-
 document.addEventListener("DOMContentLoaded", () => {
   const solarSystem = document.querySelector(".solar-system");
+  const meteorContainer = document.querySelector("#meteors");
 
   if (!solarSystem) {
-    console.error("Solar system container was not found.");
+    console.error("Solar system element not found.");
     return;
   }
 
   /* =====================================================
-       PLANET DATA
-       ===================================================== */
+       DEVICE DETECTION
+    ===================================================== */
 
-  const planets = [
-    {
-      selector: ".mercury",
-      name: "Mercury",
-    },
-    {
-      selector: ".venus",
-      name: "Venus",
-    },
-    {
-      selector: ".earth",
-      name: "Earth",
-    },
-    {
-      selector: ".mars",
-      name: "Mars",
-    },
-    {
-      selector: ".jupiter",
-      name: "Jupiter",
-    },
-    {
-      selector: ".saturn",
-      name: "Saturn",
-    },
-    {
-      selector: ".uranus",
-      name: "Uranus",
-    },
-    {
-      selector: ".neptune",
-      name: "Neptune",
-    },
-  ];
+  const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+  const isTouchDevice = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
 
   /* =====================================================
-       PLANET HOVER EFFECT
-       ===================================================== */
+       PLANETS
+    ===================================================== */
 
-  planets.forEach((planetData) => {
-    const planet = document.querySelector(planetData.selector);
+  const planets = document.querySelectorAll(".planet");
 
-    if (!planet) return;
+  planets.forEach((planet) => {
+    // Make sure planets stay clickable
+    planet.style.pointerEvents = "auto";
 
-    planet.addEventListener("mouseenter", () => {
-      planet.classList.add("planet-hover");
-    });
+    // Touch devices don't need hover effects
+    if (!isTouchDevice) {
+      planet.addEventListener("mouseenter", () => {
+        planet.classList.add("planet-hover");
+      });
 
-    planet.addEventListener("mouseleave", () => {
-      planet.classList.remove("planet-hover");
-    });
-
-    planet.addEventListener("focus", () => {
-      planet.classList.add("planet-hover");
-    });
-
-    planet.addEventListener("blur", () => {
-      planet.classList.remove("planet-hover");
-    });
+      planet.addEventListener("mouseleave", () => {
+        planet.classList.remove("planet-hover");
+      });
+    }
   });
 
   /* =====================================================
        SUN
-       ===================================================== */
+    ===================================================== */
 
   const sun = document.querySelector(".sun");
 
   if (sun) {
-    sun.setAttribute("role", "link");
-    sun.setAttribute("tabindex", "0");
-    sun.setAttribute("aria-label", "Explore the Sun on NASA");
+    sun.style.pointerEvents = "auto";
 
-    const sunURL = "https://science.nasa.gov/sun/";
+    if (!isTouchDevice) {
+      sun.addEventListener("mouseenter", () => {
+        sun.classList.add("sun-hover");
+      });
 
-    const openSun = () => {
-      window.open(sunURL, "_blank", "noopener,noreferrer");
-    };
-
-    sun.addEventListener("click", openSun);
-
-    sun.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        openSun();
-      }
-    });
-
-    sun.addEventListener("mouseenter", () => {
-      sun.classList.add("sun-hover");
-    });
-
-    sun.addEventListener("mouseleave", () => {
-      sun.classList.remove("sun-hover");
-    });
+      sun.addEventListener("mouseleave", () => {
+        sun.classList.remove("sun-hover");
+      });
+    }
   }
 
   /* =====================================================
-       STAR FIELD
-       ===================================================== */
+       DESKTOP PARALLAX ONLY
+       
+       IMPORTANT:
+       Phones do NOT run requestAnimationFrame().
+    ===================================================== */
 
-  const starContainer = document.createElement("div");
+  if (!isMobile && !isTouchDevice) {
+    let targetX = 0;
+    let targetY = 0;
 
-  starContainer.className = "star-field";
+    let currentX = 0;
+    let currentY = 0;
 
-  document.body.prepend(starContainer);
+    window.addEventListener(
+      "mousemove",
+      (event) => {
+        targetX = (event.clientX / window.innerWidth - 0.5) * 6;
 
-  /* =====================================================
-       CREATE STARS
-       ===================================================== */
+        targetY = (event.clientY / window.innerHeight - 0.5) * 6;
+      },
+      { passive: true },
+    );
 
-  const STAR_COUNT = 180;
+    function updateParallax() {
+      currentX += (targetX - currentX) * 0.03;
 
-  for (let i = 0; i < STAR_COUNT; i++) {
-    const star = document.createElement("span");
+      currentY += (targetY - currentY) * 0.03;
 
-    star.className = "star";
+      solarSystem.style.setProperty("--parallax-x", `${currentX}px`);
 
-    const size = Math.random() * 3 + 1;
+      solarSystem.style.setProperty("--parallax-y", `${currentY}px`);
 
-    star.style.width = `${size}px`;
-    star.style.height = `${size}px`;
+      requestAnimationFrame(updateParallax);
+    }
 
-    star.style.left = `${Math.random() * 100}%`;
-    star.style.top = `${Math.random() * 100}%`;
+    updateParallax();
+  } else {
+    // Make absolutely sure mobile has no parallax
+    solarSystem.style.setProperty("--parallax-x", "0px");
 
-    star.style.animationDelay = `${Math.random() * 5}s`;
-
-    star.style.animationDuration = `${Math.random() * 3 + 2}s`;
-
-    starContainer.appendChild(star);
+    solarSystem.style.setProperty("--parallax-y", "0px");
   }
 
   /* =====================================================
-       BRIGHT STARS
-       ===================================================== */
-
-  const BRIGHT_STAR_COUNT = 25;
-
-  for (let i = 0; i < BRIGHT_STAR_COUNT; i++) {
-    const star = document.createElement("span");
-
-    star.className = "bright-star";
-
-    star.style.left = `${Math.random() * 100}%`;
-    star.style.top = `${Math.random() * 100}%`;
-
-    const size = Math.random() * 4 + 2;
-
-    star.style.width = `${size}px`;
-    star.style.height = `${size}px`;
-
-    star.style.animationDelay = `${Math.random() * 4}s`;
-
-    star.style.animationDuration = `${Math.random() * 3 + 2}s`;
-
-    starContainer.appendChild(star);
-  }
-
-  /* =====================================================
-       SHOOTING STARS / METEORS
-       ===================================================== */
+       METEORS
+       
+       Desktop only.
+       Disabled completely on mobile.
+    ===================================================== */
 
   function createMeteor() {
+    if (!meteorContainer || isMobile || isTouchDevice) {
+      return;
+    }
+
     const meteor = document.createElement("div");
 
     meteor.className = "meteor";
 
     const startX = Math.random() * window.innerWidth;
-    const startY = Math.random() * window.innerHeight * 0.65;
 
-    const distance = Math.random() * 250 + 180;
+    const startY = Math.random() * (window.innerHeight * 0.65);
 
-    const angle = 35 + Math.random() * 25;
+    const distance = Math.random() * 180 + 180;
+
+    const angle = Math.random() * 15 + 30;
+
+    const duration = Math.random() * 600 + 700;
 
     meteor.style.left = `${startX}px`;
+
     meteor.style.top = `${startY}px`;
 
-    meteor.style.setProperty("--meteor-distance", `${distance}px`);
+    meteor.style.setProperty("--meteor-x", `${distance}px`);
+
+    meteor.style.setProperty("--meteor-y", `${distance * 0.65}px`);
 
     meteor.style.setProperty("--meteor-angle", `${angle}deg`);
 
-    const duration = Math.random() * 700 + 500;
+    meteor.style.setProperty("--meteor-duration", `${duration}ms`);
 
-    meteor.style.animationDuration = `${duration}ms`;
-
-    document.body.appendChild(meteor);
+    meteorContainer.appendChild(meteor);
 
     setTimeout(() => {
       meteor.remove();
@@ -207,11 +147,18 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =====================================================
-       RANDOM METEOR LOOP
-       ===================================================== */
+       SINGLE METEOR LOOP
+       
+       IMPORTANT:
+       Only starts ONCE.
+    ===================================================== */
 
   function meteorLoop() {
-    const delay = Math.random() * 3500 + 1000;
+    if (isMobile || isTouchDevice) {
+      return;
+    }
+
+    const delay = Math.random() * 4000 + 2000;
 
     setTimeout(() => {
       createMeteor();
@@ -220,92 +167,75 @@ document.addEventListener("DOMContentLoaded", () => {
     }, delay);
   }
 
-  meteorLoop();
-
-  /* =====================================================
-       SECOND METEOR CHANCE
-       ===================================================== */
-
-  setTimeout(() => {
-    if (Math.random() > 0.4) {
-      createMeteor();
-    }
-
-    setTimeout(() => {
-      meteorLoop();
-    }, 3000);
-  }, 1500);
-
-  /* =====================================================
-       RESIZE HANDLING
-       ===================================================== */
-
-  let resizeTimer;
-
-  window.addEventListener("resize", () => {
-    clearTimeout(resizeTimer);
-
-    resizeTimer = setTimeout(() => {
-      document.querySelectorAll(".meteor").forEach((meteor) => meteor.remove());
-    }, 200);
-  });
-
-  /* =====================================================
-       RANDOM PLANET GLOW
-       ===================================================== */
-
-  function randomPlanetGlow() {
-    const planetElements = document.querySelectorAll(".planet");
-
-    if (!planetElements.length) return;
-
-    const randomPlanet = planetElements[Math.floor(Math.random() * planetElements.length)];
-
-    randomPlanet.classList.add("random-glow");
-
-    setTimeout(() => {
-      randomPlanet.classList.remove("random-glow");
-    }, 900);
+  if (!isMobile && !isTouchDevice) {
+    meteorLoop();
   }
 
-  setInterval(randomPlanetGlow, 3500);
+  /* =====================================================
+       MOBILE CLEANUP
+       
+       In case old meteor elements somehow exist.
+    ===================================================== */
+
+  if (isMobile || isTouchDevice) {
+    if (meteorContainer) {
+      meteorContainer.innerHTML = "";
+    }
+  }
 
   /* =====================================================
-       ACCESSIBILITY: PLANET KEYBOARD SUPPORT
-       ===================================================== */
+       RESIZE
+       
+       Don't constantly modify the Solar System.
+    ===================================================== */
 
-  document.querySelectorAll(".planet").forEach((planet) => {
-    planet.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        planet.click();
-      }
-    });
-  });
+  let resizeTimeout;
+
+  window.addEventListener(
+    "resize",
+    () => {
+      clearTimeout(resizeTimeout);
+
+      resizeTimeout = setTimeout(() => {
+        if (isMobile || isTouchDevice) {
+          solarSystem.style.setProperty("--parallax-x", "0px");
+
+          solarSystem.style.setProperty("--parallax-y", "0px");
+        }
+      }, 150);
+    },
+    { passive: true },
+  );
 
   /* =====================================================
-       PREVENT DECORATIVE ELEMENTS FROM BLOCKING CLICKS
-       ===================================================== */
+       REMOVE POINTER EVENTS FROM DECORATIONS
+    ===================================================== */
 
-  document.querySelectorAll(".star-field, .star, .bright-star, .meteor").forEach((element) => {
+  const decorativeElements = document.querySelectorAll(".space-effects, .stars, #meteors, .meteor");
+
+  decorativeElements.forEach((element) => {
     element.style.pointerEvents = "none";
   });
 
   /* =====================================================
        REDUCED MOTION
-       ===================================================== */
+    ===================================================== */
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   if (reducedMotion.matches) {
-    document.querySelectorAll(".meteor, .star, .bright-star").forEach((element) => {
-      element.style.animation = "none";
-    });
+    solarSystem.style.setProperty("--parallax-x", "0px");
+
+    solarSystem.style.setProperty("--parallax-y", "0px");
+
+    if (meteorContainer) {
+      meteorContainer.innerHTML = "";
+    }
   }
 
   /* =====================================================
-       CONSOLE MESSAGE
-       ===================================================== */
+       DEBUG
+    ===================================================== */
 
-  console.log("%c🌌 Solar System loaded successfully!", "font-size: 16px; font-weight: bold;");
+  console.log(`Solar System loaded | ${isMobile ? "Mobile" : "Desktop"}`);
 });
