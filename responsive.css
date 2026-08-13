@@ -1,7 +1,10 @@
 /* =========================================================
    RESPONSIVE SOLAR SYSTEM
-   Appearance is NOT changed here.
-   ========================================================= */
+========================================================= */
+
+/* =========================================================
+   BASE
+========================================================= */
 
 html,
 body {
@@ -11,22 +14,33 @@ body {
 
 body {
   min-width: 0;
+
   min-height: 0;
+
   overflow: hidden;
 }
 
+/* =========================================================
+   SOLAR SYSTEM POSITION
+========================================================= */
+
 .solar-system {
   position: fixed;
+
   top: 50%;
+
   left: 50%;
 
   width: 800px;
+
   height: 800px;
 
   flex: 0 0 800px;
 
   --system-scale: 1;
+
   --parallax-x: 0px;
+
   --parallax-y: 0px;
 
   transform: translate(calc(-50% + var(--parallax-x)), calc(-50% + var(--parallax-y))) scale(var(--system-scale));
@@ -35,8 +49,9 @@ body {
 }
 
 /* =========================================================
-   WIDTH
-   ========================================================= */
+   VERY SMALL PHONES
+   <= 370px
+========================================================= */
 
 @media (max-width: 370px) {
   .solar-system {
@@ -44,11 +59,21 @@ body {
   }
 }
 
+/* =========================================================
+   SMALL PHONES
+   371px - 576px
+========================================================= */
+
 @media (min-width: 371px) and (max-width: 576px) {
   .solar-system {
     --system-scale: 0.46;
   }
 }
+
+/* =========================================================
+   LARGE PHONES / SMALL TABLETS
+   577px - 768px
+========================================================= */
 
 @media (min-width: 577px) and (max-width: 768px) {
   .solar-system {
@@ -56,11 +81,21 @@ body {
   }
 }
 
+/* =========================================================
+   TABLETS
+   769px - 991px
+========================================================= */
+
 @media (min-width: 769px) and (max-width: 991px) {
   .solar-system {
     --system-scale: 0.73;
   }
 }
+
+/* =========================================================
+   SMALL LAPTOPS
+   992px - 1180px
+========================================================= */
 
 @media (min-width: 992px) and (max-width: 1180px) {
   .solar-system {
@@ -68,11 +103,21 @@ body {
   }
 }
 
+/* =========================================================
+   LAPTOPS
+   1181px - 1300px
+========================================================= */
+
 @media (min-width: 1181px) and (max-width: 1300px) {
   .solar-system {
     --system-scale: 0.93;
   }
 }
+
+/* =========================================================
+   LARGE SCREENS
+   1301px+
+========================================================= */
 
 @media (min-width: 1301px) {
   .solar-system {
@@ -81,8 +126,8 @@ body {
 }
 
 /* =========================================================
-   HEIGHT
-   ========================================================= */
+   SHORT SCREENS
+========================================================= */
 
 @media (max-height: 600px) {
   .solar-system {
@@ -97,8 +142,8 @@ body {
 }
 
 /* =========================================================
-   SHORT PHONE
-   ========================================================= */
+   SHORT SMALL PHONES
+========================================================= */
 
 @media (max-width: 576px) and (max-height: 700px) {
   .solar-system {
@@ -107,56 +152,25 @@ body {
 }
 
 /* =========================================================
-   MOBILE PERFORMANCE
-   IMPORTANT:
-   These do NOT change Sun or planet styling.
-   ========================================================= */
+   MOBILE PARALLAX
+========================================================= */
 
 @media (max-width: 768px) {
-  /* Stop animating huge full-screen star layers */
-  .stars-back,
-  .stars-mid,
-  .stars-front,
-  body::after {
-    animation: none !important;
-  }
-
-  /* Don't animate the decorative background itself */
-  body::after {
-    transform: none !important;
-  }
-
-  /* Remove GPU hinting */
-  .solar-system,
-  .space-effects {
-    will-change: auto !important;
-  }
-
-  /* Disable meteors on mobile */
-  #meteors {
-    display: none !important;
-  }
-
-  /* Remove the extra decorative orbit glow only.
-       Planet/Sun glow is untouched. */
-  .orbit::after {
-    display: none;
-  }
-
-  /* No parallax on mobile */
   .solar-system {
     --parallax-x: 0px;
+
     --parallax-y: 0px;
   }
 }
 
 /* =========================================================
    REDUCED MOTION
-   ========================================================= */
+========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
   .solar-system {
     --parallax-x: 0px;
+
     --parallax-y: 0px;
   }
 }

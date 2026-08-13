@@ -1,9 +1,33 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const solarSystem = document.querySelector(".solar-system");
-  const meteorContainer = document.querySelector("#meteors");
+  /* =====================================================
+       ELEMENTS
+    ===================================================== */
 
-  if (!solarSystem) {
-    console.error("Solar system element not found.");
+  const solarSystem = document.querySelector(".solar-system");
+
+  const planets = document.querySelectorAll(".planet, .planet-link");
+
+  const meteorContainer = document.getElementById("meteors");
+
+  const nasaModal = document.getElementById("nasaModal");
+
+  const nasaIframe = document.getElementById("nasaIframe");
+
+  const nasaModalTitle = document.getElementById("nasaModalTitle");
+
+  const nasaModalClose = document.getElementById("nasaModalClose");
+
+  const nasaLoading = document.getElementById("nasaLoading");
+
+  const nasaBackdrop = document.querySelector(".nasa-modal-backdrop");
+
+  /* =====================================================
+       SAFETY CHECK
+    ===================================================== */
+
+  if (!solarSystem || !nasaModal || !nasaIframe || !nasaModalClose) {
+    console.error("Required Solar System elements are missing.");
+
     return;
   }
 
@@ -16,52 +40,207 @@ document.addEventListener("DOMContentLoaded", () => {
   const isTouchDevice = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
 
   /* =====================================================
-       PLANETS
+       NASA EYES BASE URL
     ===================================================== */
 
-  const planets = document.querySelectorAll(".planet");
-
-  planets.forEach((planet) => {
-    // Make sure planets stay clickable
-    planet.style.pointerEvents = "auto";
-
-    // Touch devices don't need hover effects
-    if (!isTouchDevice) {
-      planet.addEventListener("mouseenter", () => {
-        planet.classList.add("planet-hover");
-      });
-
-      planet.addEventListener("mouseleave", () => {
-        planet.classList.remove("planet-hover");
-      });
-    }
-  });
+  const NASA_EYES_BASE = "https://eyes.nasa.gov/apps/solar-system/#/";
 
   /* =====================================================
-       SUN
+       CURRENT PLANET
     ===================================================== */
 
-  const sun = document.querySelector(".sun");
+  let currentPlanet = null;
 
-  if (sun) {
-    sun.style.pointerEvents = "auto";
+  /* =====================================================
+       FORMAT PLANET NAME
+    ===================================================== */
 
-    if (!isTouchDevice) {
-      sun.addEventListener("mouseenter", () => {
-        sun.classList.add("sun-hover");
-      });
+  function formatPlanetName(name) {
+    if (!name) {
+      return "NASA Eyes";
+    }
 
-      sun.addEventListener("mouseleave", () => {
-        sun.classList.remove("sun-hover");
-      });
+    return name.charAt(0).toUpperCase() + name.slice(1);
+  }
+
+  /* =====================================================
+       OPEN NASA EYES MODAL
+    ===================================================== */
+
+  function openNASA(planetName) {
+    if (!planetName) {
+      return;
+    }
+
+    currentPlanet = planetName;
+
+    const formattedName = formatPlanetName(planetName);
+
+    /* ---------------------------------------------
+           Create URL
+        --------------------------------------------- */
+
+    const nasaURL = `${NASA_EYES_BASE}${planetName}?embed=true`;
+
+    /* ---------------------------------------------
+           Update title
+        --------------------------------------------- */
+
+    nasaModalTitle.textContent = `NASA Eyes — ${formattedName}`;
+
+    /* ---------------------------------------------
+           Show loading
+        --------------------------------------------- */
+
+    nasaLoading.classList.remove("hidden");
+
+    /* ---------------------------------------------
+           Open modal FIRST
+        --------------------------------------------- */
+
+    nasaModal.classList.add("active");
+
+    nasaModal.setAttribute("aria-hidden", "false");
+
+    /* ---------------------------------------------
+           Prevent background scrolling
+        --------------------------------------------- */
+
+    document.body.style.overflow = "hidden";
+
+    /* ---------------------------------------------
+           Load NASA Eyes ONLY AFTER CLICK
+        --------------------------------------------- */
+
+    nasaIframe.src = nasaURL;
+
+    /* ---------------------------------------------
+           Focus close button
+        --------------------------------------------- */
+
+    nasaModalClose.focus();
+
+    console.log(`Opening NASA Eyes: ${nasaURL}`);
+  }
+
+  /* =====================================================
+       CLOSE NASA EYES MODAL
+    ===================================================== */
+
+  function closeNASA() {
+    nasaModal.classList.remove("active");
+
+    nasaModal.setAttribute("aria-hidden", "true");
+
+    /*
+            Wait for the close animation,
+            then unload the iframe completely.
+        */
+
+    setTimeout(() => {
+      if (!nasaModal.classList.contains("active")) {
+        nasaIframe.src = "about:blank";
+
+        nasaLoading.classList.remove("hidden");
+
+        currentPlanet = null;
+      }
+    }, 250);
+
+    /* ---------------------------------------------
+           Restore page scrolling
+        --------------------------------------------- */
+
+    document.body.style.overflow = "";
+
+    /* ---------------------------------------------
+           Return focus to previous planet
+        --------------------------------------------- */
+
+    if (currentPlanet) {
+      const previousPlanet = document.querySelector(`[data-planet="${currentPlanet}"]`);
+
+      previousPlanet?.focus();
     }
   }
 
   /* =====================================================
-       DESKTOP PARALLAX ONLY
+       PLANET CLICK EVENTS
+    ===================================================== */
+
+  planets.forEach((planet) => {
+    /*
+            Make sure the anchor itself receives
+            the click.
+        */
+
+    planet.style.pointerEvents = "auto";
+
+    planet.style.touchAction = "manipulation";
+
+    planet.addEventListener("click", (event) => {
+      /*
+                    Prevent href="#"
+                    from jumping to the top.
+                */
+
+      event.preventDefault();
+
+      event.stopPropagation();
+
+      const planetName = planet.dataset.planet;
+
+      if (!planetName) {
+        console.warn("Missing data-planet:", planet);
+
+        return;
+      }
+
+      openNASA(planetName);
+    });
+  });
+
+  /* =====================================================
+       IFRAME LOAD
+    ===================================================== */
+
+  nasaIframe.addEventListener("load", () => {
+    nasaLoading.classList.add("hidden");
+  });
+
+  /* =====================================================
+       CLOSE BUTTON
+    ===================================================== */
+
+  nasaModalClose.addEventListener("click", () => {
+    closeNASA();
+  });
+
+  /* =====================================================
+       BACKDROP CLICK
+    ===================================================== */
+
+  if (nasaBackdrop) {
+    nasaBackdrop.addEventListener("click", () => {
+      closeNASA();
+    });
+  }
+
+  /* =====================================================
+       ESC KEY
+    ===================================================== */
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && nasaModal.classList.contains("active")) {
+      closeNASA();
+    }
+  });
+
+  /* =====================================================
+       DESKTOP PARALLAX
        
-       IMPORTANT:
-       Phones do NOT run requestAnimationFrame().
+       Disabled on mobile/touch devices
+       for performance.
     ===================================================== */
 
   if (!isMobile && !isTouchDevice) {
@@ -78,7 +257,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         targetY = (event.clientY / window.innerHeight - 0.5) * 6;
       },
-      { passive: true },
+      {
+        passive: true,
+      },
     );
 
     function updateParallax() {
@@ -94,18 +275,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     updateParallax();
-  } else {
-    // Make absolutely sure mobile has no parallax
-    solarSystem.style.setProperty("--parallax-x", "0px");
-
-    solarSystem.style.setProperty("--parallax-y", "0px");
   }
 
   /* =====================================================
        METEORS
        
        Desktop only.
-       Disabled completely on mobile.
     ===================================================== */
 
   function createMeteor() {
@@ -119,7 +294,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const startX = Math.random() * window.innerWidth;
 
-    const startY = Math.random() * (window.innerHeight * 0.65);
+    const startY = Math.random() * window.innerHeight * 0.65;
 
     const distance = Math.random() * 180 + 180;
 
@@ -147,10 +322,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =====================================================
-       SINGLE METEOR LOOP
+       METEOR LOOP
        
-       IMPORTANT:
-       Only starts ONCE.
+       Starts only once.
     ===================================================== */
 
   function meteorLoop() {
@@ -158,7 +332,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const delay = Math.random() * 4000 + 2000;
+    const delay = Math.random() * 4000 + 2500;
 
     setTimeout(() => {
       createMeteor();
@@ -172,50 +346,26 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =====================================================
+       DISABLE DECORATIVE POINTER EVENTS
+    ===================================================== */
+
+  document.querySelectorAll(".space-effects, .stars, #meteors, .meteor").forEach((element) => {
+    element.style.pointerEvents = "none";
+  });
+
+  /* =====================================================
        MOBILE CLEANUP
-       
-       In case old meteor elements somehow exist.
     ===================================================== */
 
   if (isMobile || isTouchDevice) {
     if (meteorContainer) {
       meteorContainer.innerHTML = "";
     }
+
+    solarSystem.style.setProperty("--parallax-x", "0px");
+
+    solarSystem.style.setProperty("--parallax-y", "0px");
   }
-
-  /* =====================================================
-       RESIZE
-       
-       Don't constantly modify the Solar System.
-    ===================================================== */
-
-  let resizeTimeout;
-
-  window.addEventListener(
-    "resize",
-    () => {
-      clearTimeout(resizeTimeout);
-
-      resizeTimeout = setTimeout(() => {
-        if (isMobile || isTouchDevice) {
-          solarSystem.style.setProperty("--parallax-x", "0px");
-
-          solarSystem.style.setProperty("--parallax-y", "0px");
-        }
-      }, 150);
-    },
-    { passive: true },
-  );
-
-  /* =====================================================
-       REMOVE POINTER EVENTS FROM DECORATIONS
-    ===================================================== */
-
-  const decorativeElements = document.querySelectorAll(".space-effects, .stars, #meteors, .meteor");
-
-  decorativeElements.forEach((element) => {
-    element.style.pointerEvents = "none";
-  });
 
   /* =====================================================
        REDUCED MOTION
@@ -234,8 +384,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* =====================================================
-       DEBUG
+       FINAL MESSAGE
     ===================================================== */
 
-  console.log(`Solar System loaded | ${isMobile ? "Mobile" : "Desktop"}`);
+  console.log("🌌 Solar System + NASA Eyes ready.");
 });
